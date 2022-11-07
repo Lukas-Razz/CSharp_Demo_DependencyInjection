@@ -4,23 +4,24 @@ using Demo.DI.DAL.EFCore;
 using Entities = Demo.DI.DAL.EFCore.Entities;
 using Demo.DI.Domain;
 using Microsoft.EntityFrameworkCore;
+using Demo.DI.Infrastucture.EFCore;
 
-namespace Demo.DI.Infrastructure
+namespace Demo.DI.Infrastructure.EFCore
 {
     public class EnrollmentRepository : IEnrollmentRepository
     {
-        private CourseContext _context;
+        private IEFCoreUnitOfWork _uow;
         private IMapper _mapper;
 
-        public EnrollmentRepository(CourseContext context, IMapper mapper)
+        public EnrollmentRepository(IEFCoreUnitOfWork uow, IMapper mapper)
         {
-            _context = context;
+            _uow = uow;
             _mapper = mapper;
         }
 
         public async Task<IEnumerable<Enrollment>> GetAllAsync()
         {
-            var enrollments = await _context.Enrollments.ToListAsync();
+            var enrollments = await _uow.Context.Enrollments.ToListAsync();
 
             return _mapper.Map<IEnumerable<Enrollment>>(enrollments);
         }
@@ -29,9 +30,9 @@ namespace Demo.DI.Infrastructure
         {
             var enrollmentEntity = _mapper.Map<Entities.Enrollment>(enrollment);
 
-            var entry = await _context.Enrollments.AddAsync(enrollmentEntity);
+            var entry = await _uow.Context.Enrollments.AddAsync(enrollmentEntity);
 
-            await _context.SaveChangesAsync();
+            await _uow.Context.SaveChangesAsync();
 
             return entry.Entity.Id;
         }
@@ -40,9 +41,9 @@ namespace Demo.DI.Infrastructure
         {
             var enrollmentEntity = _mapper.Map<Entities.Enrollment>(enrollment);
 
-            var entry = _context.Enrollments.Update(enrollmentEntity);
+            var entry = _uow.Context.Enrollments.Update(enrollmentEntity);
 
-            await _context.SaveChangesAsync();
+            await _uow.Context.SaveChangesAsync();
 
             return entry.Entity.Id;
         }

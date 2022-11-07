@@ -1,13 +1,14 @@
-﻿using Demo.DI.BL.Contracts;
-using Demo.DI.DAL.EFCore;
+﻿using Demo.DI.DAL.EFCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Demo.DI.Infrastucture.EFCore
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IEFCoreUnitOfWork
     {
         private CourseContext _context;
         private IDbContextTransaction _transaction;
+
+        public CourseContext Context => _context;
 
         public UnitOfWork(CourseContext context)
         {
@@ -29,14 +30,16 @@ namespace Demo.DI.Infrastucture.EFCore
             return ValueTask.CompletedTask;
         }
 
-        public Task RollbackAsync()
+        public async Task RollbackAsync()
         {
-            return _transaction.RollbackAsync();
+            await _transaction.RollbackAsync();
+            _transaction = _context.Database.BeginTransaction();
         }
 
-        public Task CommitAsync()
+        public async Task CommitAsync()
         {
-            return _transaction.CommitAsync();
+            await _transaction.CommitAsync();
+            _transaction = _context.Database.BeginTransaction();
         }
     }
 }

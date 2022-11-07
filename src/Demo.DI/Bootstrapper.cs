@@ -1,14 +1,7 @@
 ﻿using Autofac;
-using AutoMapper;
-using Demo.DI.DAL.EFCore;
+using Demo.DI.Infrastucture.Dapper;
 using Demo.DI.Infrastucture.EFCore;
 using Microsoft.Data.Sqlite;
-using SimpleInjector.Lifestyles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Demo.DI
 {
@@ -17,7 +10,7 @@ namespace Demo.DI
         private SqliteConnection _courseConnection;
         public IContainer Container { get; init; }
 
-        public Bootstrapper()
+        public Bootstrapper(Provider provider)
         {
             // This configures in-memory database
             _courseConnection = new SqliteConnection("Filename=:memory:");
@@ -25,50 +18,50 @@ namespace Demo.DI
 
             var builder = new ContainerBuilder();
 
-            builder.RegisterModule(new EFCoreModule(_courseConnection));
-
-            // Registration of AutoMapper profiles
-            // Kudos to Martin Loitzl
-            // https://blog.loitzl.com/posts/autofac-and-automapper-a-perfect-match
-            // Get all Profiles and add them to the MapperConfiguration
-            builder.Register(context =>
+            // Coose ORM
+            Module module = provider switch
             {
-                var profiles = context.Resolve<IEnumerable<Profile>>();
-                var config = new MapperConfiguration(x =>
-                {
-                    foreach (var profile in profiles)
-                    {
-                        x.AddProfile(profile);
-                    }
-                });
+                Provider.EFCore => new EFCoreModule(_courseConnection),
+                Provider.Dapper => new DapperModule(_courseConnection),
+            };
+            builder.RegisterModule(module);
 
-                return config;
-            }).SingleInstance().AutoActivate().AsSelf();
-            // Resolve the MapperConfiguration and call CreateMapper()  
-            builder.Register(context =>
-            {
-                var ctx = context.Resolve<IComponentContext>();
-                var config = ctx.Resolve<MapperConfiguration>();
-                return config.CreateMapper(
-                  t => ctx.Resolve(t) // The magic is happening here: Autofac will now fulfill all dependcies defined in MapperConfigurations
-                );
-            });
+            // See BootstraperExtensions
+            builder.RegisterAutoMapper();
 
             Container = builder.Build();
 
-            InitDatabaseEFCore();
+            // Init database
+            Action dbInit = provider switch
+            {
+                Provider.EFCore => InitDatabaseEFCore,
+                Provider.Dapper => InitDatabaseDapper,
+            };
+            dbInit();
         }
 
         private void InitDatabaseEFCore()
         {
-            using var context = Container.Resolve<CourseContext>();
+            using var context = Container.Resolve<DAL.EFCore.CourseContext>();
             context.Database.EnsureCreated();
+        }
+
+        private void InitDatabaseDapper()
+        {
+            var context = Container.Resolve<DAL.Dapper.CourseContext>();
+            context.CreateDatabase().GetAwaiter().GetResult(); // Can't await in constructor
         }
 
         public void Dispose()
         {
             _courseConnection.Dispose();
             Container.Dispose();
+        }
+
+        public enum Provider
+        {
+            EFCore,
+            Dapper
         }
     }
 }

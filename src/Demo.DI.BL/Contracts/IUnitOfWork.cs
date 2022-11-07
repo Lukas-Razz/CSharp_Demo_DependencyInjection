@@ -1,4 +1,6 @@
-﻿namespace Demo.DI.BL.Contracts
+﻿using System.Data;
+
+namespace Demo.DI.BL.Contracts
 {
     public interface IUnitOfWork : IDisposable, IAsyncDisposable
     {

@@ -1,36 +1,38 @@
 ﻿using AutoMapper;
 using Demo.DI.BL.Contracts;
 using Demo.DI.DAL.EFCore;
-using Demo.DI.DAL.EFCore.Entities;
+using Entities = Demo.DI.DAL.EFCore.Entities;
 using Microsoft.EntityFrameworkCore;
+using Demo.DI.Domain;
+using Demo.DI.Infrastucture.EFCore;
 
-namespace Demo.DI.Infrastructure
+namespace Demo.DI.Infrastructure.EFCore
 {
     public class CourseRepository : ICourseRepository
     {
-        private CourseContext _context;
+        private IEFCoreUnitOfWork _uow;
         private IMapper _mapper;
 
-        public CourseRepository(CourseContext context, IMapper mapper)
+        public CourseRepository(IEFCoreUnitOfWork uow, IMapper mapper)
         {
-            _context = context;
+            _uow = uow;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Domain.Course>> GetAllAsync()
+        public async Task<IEnumerable<Course>> GetAllAsync()
         {
-            var courses = await _context.Courses.ToListAsync();
+            var courses = await _uow.Context.Courses.ToListAsync();
 
-            return _mapper.Map<IEnumerable<Domain.Course>>(courses);
+            return _mapper.Map<IEnumerable<Course>>(courses);
         }
 
-        public async Task<Guid> CreateAsync(Domain.Course course)
+        public async Task<Guid> CreateAsync(Course course)
         {
-            var courseEntity = _mapper.Map<Course>(course);
+            var courseEntity = _mapper.Map<Entities.Course>(course);
 
-            var entry = await _context.Courses.AddAsync(courseEntity);
+            var entry = await _uow.Context.Courses.AddAsync(courseEntity);
 
-            await _context.SaveChangesAsync();
+            await _uow.Context.SaveChangesAsync();
 
             return entry.Entity.Id;
         }
