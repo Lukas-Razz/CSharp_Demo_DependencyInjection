@@ -41,7 +41,7 @@ Lukáš Daubner
 
 * So-called micro-ORM
 * Lightweight
-* Basically a wrapper around ADO.NET
+* Basically a wrapper around ADO&#46;NET
 * Uses a lot of SQL
 
 ---
@@ -184,7 +184,7 @@ Microsoft.Extensions.DependencyInjection
 * Typical lifecycles are:
 * **Transient** - each resolution gives new instance
 * **Singleton** - one global instance
-  - Proffered way of implementing singleton!
+  - Preferred way of implementing singleton!
 * **Scoped** - depending on an explicit scope
 * **PerGraph** - one per dependency graph
 * Keep in mind that not every container implements them or calls them the same
@@ -258,7 +258,7 @@ CourseService service = new CourseService(_courseRepositoryMock.Object);
 # Task
 
 * Register the CourseService and EnrollmentService to AutoFac and try to resolve it
-* Implement CourseService and CourseService using TDD
+* Implement CourseService and EnrollmentService using TDD
   - First write the tests
   - Then write the code
 * Mock all dependencies

@@ -99,7 +99,7 @@ namespace Demo.DI.BL.Tests
 
             var actual = await service.GetAvailableCourses("location");
 
-            actual.Should().HaveCount(2, "because we there are two Courses with right location and start date is the same");
+            actual.Should().HaveCount(2, "because there are two Courses with right location and start date is the same");
         }
 
     }
