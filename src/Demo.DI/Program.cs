@@ -62,12 +62,8 @@ using (var scope = _ioc.Container.BeginLifetimeScope())
 
 using (var scope = _ioc.Container.BeginLifetimeScope())
 {
+    using var uow = scope.Resolve<IUnitOfWork>();
     var courseService = scope.Resolve<ICourseService>();
     await courseService.EnlistCourse("New Stuff At Glance", "Ostrava", "example@test.test", DateTime.UtcNow.AddDays(30));
-    var courses = await courseService.GetCoursesBetween(DateTime.UtcNow.AddDays(1).Some(), Option.None<DateTime>());
-    Console.WriteLine("Upcoming courses:");
-    foreach (var c in courses)
-    {
-        Console.WriteLine(c.Name);
-    }
+    await uow.CommitAsync();
 }

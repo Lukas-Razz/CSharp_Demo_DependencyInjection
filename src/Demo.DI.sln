@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.DI.Domain", "Demo.DI.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.DI.DAL.Dapper", "Demo.DI.DAL.Dapper\Demo.DI.DAL.Dapper.csproj", "{40AEBB38-59FE-4183-8C89-06011EF75DDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.DI.DAL.EFCore.Migration", "Demo.DI.DAL.EFCore.Migration\Demo.DI.DAL.EFCore.Migration.csproj", "{F9C83422-13AE-446D-8A89-1E1A19253268}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.DI.DAL.EFCore.Migration", "Demo.DI.DAL.EFCore.Migration\Demo.DI.DAL.EFCore.Migration.csproj", "{F9C83422-13AE-446D-8A89-1E1A19253268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.DI.BL.Tests", "Demo.DI.BL.Tests\Demo.DI.BL.Tests.csproj", "{63813F07-AAC3-4154-8239-CDEDE47F0D94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{F9C83422-13AE-446D-8A89-1E1A19253268}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9C83422-13AE-446D-8A89-1E1A19253268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9C83422-13AE-446D-8A89-1E1A19253268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63813F07-AAC3-4154-8239-CDEDE47F0D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63813F07-AAC3-4154-8239-CDEDE47F0D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63813F07-AAC3-4154-8239-CDEDE47F0D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63813F07-AAC3-4154-8239-CDEDE47F0D94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

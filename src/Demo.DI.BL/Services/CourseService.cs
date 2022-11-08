@@ -42,7 +42,7 @@ namespace Demo.DI.BL.Services
 
             var courses = await _courseRepository.GetAllAsync();
 
-            return courses.Where(c => c.Location == location);
+            return courses.Where(c => c.Location == location && c.Start > DateTime.UtcNow);
         }
 
         // Retruns all courses in the interval

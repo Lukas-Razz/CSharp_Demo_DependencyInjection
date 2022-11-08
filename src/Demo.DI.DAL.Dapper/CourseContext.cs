@@ -15,17 +15,6 @@ namespace Demo.DI.DAL.Dapper
 
         public async Task CreateDatabase()
         {
-            // Create Database
-            //var databaseName = DbConnection.Database;
-            //if (!Regex.IsMatch(databaseName, @"^[\w\.]+$"))
-            //    throw new DataException($"Wrong databse name, found '{databaseName}'");
-            //// Can't parametrize create database call - Therefore, only one-word names with dots are allowed
-            //var createDatabaseIfNotExists = @$"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = {databaseName})
-            //        BEGIN
-            //            CREATE DATABASE {databaseName}
-            //        END";
-            //await DbConnection.ExecuteAsync(createDatabaseIfNotExists, new { DBName = databaseName });
-
             // Create Tables
             using (var transaction = DbConnection.BeginTransaction())
             {
