@@ -1,7 +1,13 @@
 ﻿using Autofac;
+using Demo.DI.BL.Contracts;
+using Demo.DI.BL.Services;
+using Demo.DI.Infrastructure;
 using Demo.DI.Infrastucture.Dapper;
 using Demo.DI.Infrastucture.EFCore;
 using Microsoft.Data.Sqlite;
+using FluentEmail.Core.Interfaces;
+using FluentEmail.Smtp;
+using System.Net.Mail;
 
 namespace Demo.DI
 {
@@ -25,6 +31,22 @@ namespace Demo.DI
                 Provider.Dapper => new DapperModule(_courseConnection),
             };
             builder.RegisterModule(module);
+
+            // Register BL Services
+            builder.RegisterType<CourseService>()
+                .As<ICourseService>();
+            builder.RegisterType<EnrollmentService>()
+                .As<IEnrollmentService>();
+
+            // Email
+            builder.RegisterType<EmailService>()
+                .As<IEmailService>();
+            var smtpClient = new SmtpClient("smtp-relay.sendinblue.com", 587)
+            {
+                Credentials = new System.Net.NetworkCredential("", "")
+            };
+            builder.Register(ctx => new SmtpSender(smtpClient))
+                .As<ISender>();
 
             // See BootstraperExtensions
             builder.RegisterAutoMapper();

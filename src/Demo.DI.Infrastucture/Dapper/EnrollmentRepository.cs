@@ -43,11 +43,21 @@ namespace Demo.DI.Infrastucture.Dapper
 
         public async Task<IEnumerable<Enrollment>> GetAllAsync()
         {
-            var selectQuery = @"SELECT Id, CourseId, UserId, ContactEmail, EnrollmentTimestamp, CanceledTimestamp FROM Enrollments;";
+            var selectQuery = @"SELECT 
+                E.Id, E.CourseId, E.UserId, E.ContactEmail, E.EnrollmentTimestamp, E.CanceledTimestamp,
+                C.Id, C.Name, C.Start, C.Location, C.Contact
+                FROM Enrollments AS E 
+                JOIN Courses AS C ON 
+                E.CourseId = C.Id;";
 
             var connection = _uow.Transaction.Connection;
 
-            var courses = await connection.QueryAsync<Entities.Enrollment>(selectQuery);
+            var courses = await connection.QueryAsync<Entities.Enrollment, Entities.Course, Entities.Enrollment>
+                (selectQuery, (enrollment, course) =>
+                {
+                    enrollment.Course = course;
+                    return enrollment;
+                });
 
             return _mapper.Map<IEnumerable<Enrollment>>(courses);
         }

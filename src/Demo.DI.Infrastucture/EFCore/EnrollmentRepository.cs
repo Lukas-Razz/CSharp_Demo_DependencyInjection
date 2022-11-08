@@ -21,7 +21,7 @@ namespace Demo.DI.Infrastructure.EFCore
 
         public async Task<IEnumerable<Enrollment>> GetAllAsync()
         {
-            var enrollments = await _uow.Context.Enrollments.ToListAsync();
+            var enrollments = await _uow.Context.Enrollments.Include(e => e.Course).ToListAsync();
 
             return _mapper.Map<IEnumerable<Enrollment>>(enrollments);
         }

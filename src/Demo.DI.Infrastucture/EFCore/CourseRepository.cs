@@ -26,6 +26,13 @@ namespace Demo.DI.Infrastructure.EFCore
             return _mapper.Map<IEnumerable<Course>>(courses);
         }
 
+        public async Task<Course> GetAsync(Guid courseId)
+        {
+            var course = await _uow.Context.Courses.FindAsync(courseId);
+
+            return _mapper.Map<Course>(course);
+        }
+
         public async Task<Guid> CreateAsync(Course course)
         {
             var courseEntity = _mapper.Map<Entities.Course>(course);
@@ -35,6 +42,13 @@ namespace Demo.DI.Infrastructure.EFCore
             await _uow.Context.SaveChangesAsync();
 
             return entry.Entity.Id;
+        }
+
+        public async Task<Course> GetByNameAsync(string courseName)
+        {
+            var course = await _uow.Context.Courses.Where(c => c.Name == courseName).FirstOrDefaultAsync();
+
+            return _mapper.Map<Course>(course);
         }
     }
 }

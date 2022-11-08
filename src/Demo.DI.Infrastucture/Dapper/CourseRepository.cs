@@ -39,6 +39,34 @@ namespace Demo.DI.Infrastucture.Dapper
             return newId;
         }
 
+        public async Task<Course> GetAsync(Guid courseId)
+        {
+            var selectQuery = @"SELECT Id, Name, Start, Location, Contact FROM Courses WHERE Id = @Id;";
+
+            var connection = _uow.Transaction.Connection;
+
+            var course = await connection.QueryFirstAsync<Entities.Course>(selectQuery, new
+            {
+                Id = courseId
+            });
+
+            return _mapper.Map<Course>(course);
+        }
+
+        public async Task<Course> GetByNameAsync(string courseName)
+        {
+            var selectQuery = @"SELECT Id, Name, Start, Location, Contact FROM Courses WHERE Name = @Name;";
+
+            var connection = _uow.Transaction.Connection;
+
+            var course = await connection.QueryFirstAsync<Entities.Course>(selectQuery, new
+            {
+                Name = courseName
+            });
+
+            return _mapper.Map<Course>(course);
+        }
+
         public async Task<IEnumerable<Course>> GetAllAsync()
         {
             var selectQuery = @"SELECT Id, Name, Start, Location, Contact FROM Courses;";
